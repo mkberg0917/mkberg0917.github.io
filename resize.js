@@ -11,7 +11,7 @@ function resize() {
   
 
   
-  document.getElementByClassName("tabcontent").innerHTML = "Paragraph changed!" + tall;
+  document.getElementById("Corporation").innerHTML = "Paragraph changed!";
   
   
   
