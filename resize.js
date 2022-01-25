@@ -11,7 +11,7 @@ function resize() {
   
 
   
-  document.getElementById("Corporation").innerHTML = "Paragraph changed!";
+  document.getElementById("Corporation").innerHTML = "Poof!";
   
   
   
