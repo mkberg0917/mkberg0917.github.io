@@ -33,5 +33,5 @@ function resize() {
   
 }
 
-window.onresize = resize;
+window.onload = resize;
 
