@@ -6,8 +6,5 @@ function resize() {
   widthOutput.textContent = window.innerWidth;
 }
 
-window.addEventListener('resize', function(event){
-    var newWidth = window.innerWidth;
-    var newHeight = window.innerHeight; 
-});
+window.onresize = resize;
 
