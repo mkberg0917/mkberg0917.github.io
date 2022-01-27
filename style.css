@@ -6,6 +6,8 @@
     padding: 0;
     display: flex;
     border: 10px solid black;
+    max-width: 600px;
+    max-height: 400px;
 }
 
 /* wraps all tab buttons */
@@ -27,6 +29,11 @@
     margin: 0;
     border-left: 10px solid black;
     
+}
+
+.tabcontent {
+    height: 100%;
+    width: 100%;
 }
 
 /* tabs */
