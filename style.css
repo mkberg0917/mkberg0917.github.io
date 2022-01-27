@@ -66,4 +66,6 @@
     border-left: none !important;
     display: flex;
     align-items: stretch;
+    width: 60%;
+    height: 550px;
     }
