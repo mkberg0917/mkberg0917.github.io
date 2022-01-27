@@ -2,7 +2,7 @@
 $(window).on('resize', function() {
   setTimeout(function() {
     changeFBPagePlugin()
-  }, 1500);
+  }, 500);
 });
 
 $(window).on('load', function() {
