@@ -74,7 +74,7 @@
 
     // Function to fetch playlist items using pagination
     function fetchPlaylistItems(playlistId, pageToken) {
-        var apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=' + playlistId + '&key=AIzaSyCRdykR8k_Hg8AkBhYioyN7hm-Pb28WmZU' + (pageToken ? '&pageToken=' + pageToken : '');
+        var apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=' + playlistId + '&key=YOUR_API_KEY_HERE' + (pageToken ? '&pageToken=' + pageToken : '');
 
         fetch(apiUrl)
             .then(response => response.json())
@@ -99,23 +99,24 @@
             videoDiv.innerHTML = `
                 <div class="videoTitle">${item.snippet.title}</div>
                 <input type="text" class="videoEmbedUrl" value="${embedUrl}" readonly>
-                <button class="copyButton" onclick="copyUrl(this)">Copy</button>
+                <button class="copyButton" onclick="copyUrl(this, '${embedUrl}')">Copy</button>
             `;
             videosContainer.appendChild(videoDiv);
         });
     }
 
     // Function to copy URL to clipboard
-    function copyUrl(button) {
-        var embedUrlInput = button.previousSibling;
-        embedUrlInput.select();
-        document.execCommand('copy');
-        button.innerText = "Copied";
-        button.disabled = true;
-        setTimeout(function(){
-            button.innerText = "Copy";
-            button.disabled = false;
-        }, 1500); // Revert back to "Copy" after 1.5 seconds
+    function copyUrl(button, url) {
+        navigator.clipboard.writeText(url).then(function() {
+            button.innerText = "Copied";
+            button.disabled = true;
+            setTimeout(function(){
+                button.innerText = "Copy";
+                button.disabled = false;
+            }, 1500); // Revert back to "Copy" after 1.5 seconds
+        }).catch(function(err) {
+            console.error('Error copying to clipboard: ', err);
+        });
     }
 </script>
 
