@@ -109,6 +109,7 @@
     function copyUrl(button) {
         var embedUrlInput = button.previousSibling;
         embedUrlInput.select();
+        embedUrlInput.setSelectionRange(0, 99999); /* For mobile devices */
         document.execCommand('copy');
         button.innerText = "Copied";
         button.classList.add("copied");
