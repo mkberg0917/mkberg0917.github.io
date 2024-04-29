@@ -40,9 +40,6 @@
     .copyButton:hover {
         background-color: #0056b3;
     }
-    .copied {
-        background-color: #28a745;
-    }
 </style>
 </head>
 <body>
@@ -108,15 +105,9 @@
     // Function to copy URL to clipboard
     function copyUrl(button) {
         var embedUrlInput = button.previousSibling;
-        embedUrlInput.focus();
-        embedUrlInput.setSelectionRange(0, embedUrlInput.value.length);
+        embedUrlInput.select();
         document.execCommand('copy');
-        button.innerText = "Copied";
-        button.classList.add("copied");
-        setTimeout(function(){
-            button.innerText = "Copy";
-            button.classList.remove("copied");
-        }, 1500); // Revert back to "Copy" after 1.5 seconds
+        alert('Copied to clipboard: ' + embedUrlInput.value);
     }
 </script>
 
