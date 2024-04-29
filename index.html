@@ -40,6 +40,9 @@
     .copyButton:hover {
         background-color: #0056b3;
     }
+    .copied {
+        background-color: #28a745;
+    }
 </style>
 </head>
 <body>
@@ -107,7 +110,12 @@
         var embedUrlInput = button.previousSibling;
         embedUrlInput.select();
         document.execCommand('copy');
-        alert('Copied to clipboard: ' + embedUrlInput.value);
+        button.innerText = "Copied";
+        button.classList.add("copied");
+        setTimeout(function(){
+            button.innerText = "Copy";
+            button.classList.remove("copied");
+        }, 1500); // Revert back to "Copy" after 1.5 seconds
     }
 </script>
 
