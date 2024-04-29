@@ -28,6 +28,18 @@
         border-radius: 5px;
         margin-bottom: 5px;
     }
+    .copyButton {
+        margin-left: 5px;
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .copyButton:hover {
+        background-color: #0056b3;
+    }
 </style>
 </head>
 <body>
@@ -48,14 +60,7 @@
             alert('Invalid YouTube Playlist URL');
             return;
         }
-        var apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=' + playlistId + '&key=AIzaSyCRdykR8k_Hg8AkBhYioyN7hm-Pb28WmZU';
-
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                displayVideos(data.items);
-            })
-            .catch(error => console.error('Error fetching playlist data: ', error));
+        fetchPlaylistItems(playlistId, '');
     }
 
     // Function to extract playlist ID from URL
@@ -64,10 +69,25 @@
         return match ? match[1] : null;
     }
 
-    // Function to display videos with embed URLs and titles
+    // Function to fetch playlist items using pagination
+    function fetchPlaylistItems(playlistId, pageToken) {
+        var apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=' + playlistId + '&key=YOUR_API_KEY' + (pageToken ? '&pageToken=' + pageToken : '');
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                displayVideos(data.items);
+                if (data.nextPageToken) {
+                    // Fetch next page of playlist items
+                    fetchPlaylistItems(playlistId, data.nextPageToken);
+                }
+            })
+            .catch(error => console.error('Error fetching playlist data: ', error));
+    }
+
+    // Function to display videos with embed URLs, titles, and copy buttons
     function displayVideos(items) {
         var videosContainer = document.getElementById('videosContainer');
-        videosContainer.innerHTML = '';
         items.forEach(item => {
             var videoId = item.snippet.resourceId.videoId;
             var embedUrl = 'https://www.youtube.com/embed/' + videoId;
@@ -76,9 +96,18 @@
             videoDiv.innerHTML = `
                 <div class="videoTitle">${item.snippet.title}</div>
                 <input type="text" class="videoEmbedUrl" value="${embedUrl}" readonly>
+                <button class="copyButton" onclick="copyUrl(this)">Copy</button>
             `;
             videosContainer.appendChild(videoDiv);
         });
+    }
+
+    // Function to copy URL to clipboard
+    function copyUrl(button) {
+        var embedUrlInput = button.previousSibling;
+        embedUrlInput.select();
+        document.execCommand('copy');
+        alert('Copied to clipboard: ' + embedUrlInput.value);
     }
 </script>
 
