@@ -51,23 +51,25 @@
     // Function to generate embed URLs for each video in playlist
     function generateEmbedUrls() {
         var playlistUrl = document.getElementById('playlistInput').value;
-        fetch(playlistUrl)
-            .then(response => response.text())
-            .then(data => {
-                var videoIds = extractVideoIds(data);
-                displayVideos(videoIds);
-            })
-            .catch(error => console.error('Error fetching playlist data: ', error));
+        var apiUrl = 'https://www.youtube.com/playlist?list=' + playlistUrl.split('list=')[1] + '&hl=en&jct=xkUZVuvol8T0PdxyL15E1tgbQZUt0MuJWnGbMA';
+        
+        var script = document.createElement('script');
+        script.src = apiUrl + '&callback=handlePlaylistResponse';
+        document.body.appendChild(script);
     }
 
-    // Function to extract video IDs from playlist page HTML content
-    function extractVideoIds(htmlContent) {
+    // Callback function to handle playlist response
+    function handlePlaylistResponse(data) {
+        var videoIds = extractVideoIds(data);
+        displayVideos(videoIds);
+    }
+
+    // Function to extract video IDs from playlist data
+    function extractVideoIds(data) {
         var videoIds = [];
-        var regex = /"videoId":"(.*?)"/g;
-        var match;
-        while (match = regex.exec(htmlContent)) {
-            videoIds.push(match[1]);
-        }
+        data.items.forEach(function(item) {
+            videoIds.push(item.snippet.resourceId.videoId);
+        });
         return videoIds;
     }
 
