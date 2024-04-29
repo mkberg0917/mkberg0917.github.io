@@ -96,18 +96,11 @@
             videoDiv.innerHTML = `
                 <div class="videoTitle">${item.snippet.title}</div>
                 <input type="text" class="videoEmbedUrl" value="${embedUrl}" readonly>
-                <button class="copyButton" onclick="copyUrl(this)">Copy</button>
             `;
             videosContainer.appendChild(videoDiv);
         });
     }
 
-    // Function to copy URL to clipboard
-    function copyUrl(button) {
-        var embedUrlInput = button.previousSibling.value;
-        document.execCommand('copy');
-        alert('Copied to clipboard: ' + embedUrlInput.value);
-    }
 </script>
 
 </body>
