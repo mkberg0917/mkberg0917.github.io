@@ -74,7 +74,7 @@
 
     // Function to fetch playlist items using pagination
     function fetchPlaylistItems(playlistId, pageToken) {
-        var apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=' + playlistId + '&key=YOUR_API_KEY_HERE' + (pageToken ? '&pageToken=' + pageToken : '');
+        var apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=' + playlistId + '&key=AIzaSyCRdykR8k_Hg8AkBhYioyN7hm-Pb28WmZU' + (pageToken ? '&pageToken=' + pageToken : '');
 
         fetch(apiUrl)
             .then(response => response.json())
