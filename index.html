@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YouTube Playlist URL Generator</title>
+<title>YouTube Playlist Embedded URL Generator</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -28,76 +28,58 @@
         border-radius: 5px;
         margin-bottom: 5px;
     }
-    .copyButton {
-        padding: 5px 10px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .copyButton:hover {
-        background-color: #0056b3;
-    }
 </style>
 </head>
 <body>
 
-<h2>YouTube Playlist URL Generator</h2>
-<input type="text" id="playlistInput" placeholder="Enter YouTube Playlist ID">
+<h2>YouTube Playlist Embedded URL Generator</h2>
+<form onsubmit="return false;">
+    <input type="text" id="playlistInput" placeholder="Enter YouTube Playlist URL">
+    <button onclick="generateEmbedUrls()">Generate</button>
+</form>
 <div id="videosContainer"></div>
 
 <script>
     // Function to generate embed URLs for each video in playlist
     function generateEmbedUrls() {
-        var playlistId = document.getElementById('playlistInput').value;
+        var playlistUrl = document.getElementById('playlistInput').value;
+        var playlistId = getPlaylistIdFromUrl(playlistUrl);
+        if (!playlistId) {
+            alert('Invalid YouTube Playlist URL');
+            return;
+        }
         var apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=' + playlistId + '&key=AIzaSyCRdykR8k_Hg8AkBhYioyN7hm-Pb28WmZU';
 
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
-                var videoIds = extractVideoIds(data);
-                displayVideos(videoIds);
+                displayVideos(data.items);
             })
             .catch(error => console.error('Error fetching playlist data: ', error));
     }
 
-    // Function to extract video IDs from playlist data
-    function extractVideoIds(data) {
-        var videoIds = [];
-        data.items.forEach(function(item) {
-            videoIds.push(item.snippet.resourceId.videoId);
-        });
-        return videoIds;
+    // Function to extract playlist ID from URL
+    function getPlaylistIdFromUrl(url) {
+        var match = url.match(/[?&]list=([^&]+)/);
+        return match ? match[1] : null;
     }
 
-    // Function to display videos with embed URLs and copy buttons
-    function displayVideos(videoIds) {
+    // Function to display videos with embed URLs and titles
+    function displayVideos(items) {
         var videosContainer = document.getElementById('videosContainer');
         videosContainer.innerHTML = '';
-        videoIds.forEach(videoId => {
+        items.forEach(item => {
+            var videoId = item.snippet.resourceId.videoId;
             var embedUrl = 'https://www.youtube.com/embed/' + videoId;
             var videoDiv = document.createElement('div');
             videoDiv.classList.add('videoContainer');
             videoDiv.innerHTML = `
-                <div class="videoTitle">Video ID: ${videoId}</div>
+                <div class="videoTitle">${item.snippet.title}</div>
                 <input type="text" class="videoEmbedUrl" value="${embedUrl}" readonly>
-                <button class="copyButton" onclick="copyUrl(this)">Copy URL</button>
             `;
             videosContainer.appendChild(videoDiv);
         });
     }
-
-    // Function to copy URL to clipboard
-    function copyUrl(button) {
-        var embedUrlInput = button.previousSibling;
-        embedUrlInput.select();
-        document.execCommand('copy');
-        alert('Copied to clipboard: ' + embedUrlInput.value);
-    }
-
-    // Event listener for generating embed URLs
-    document.getElementById('playlistInput').addEventListener('input', generateEmbedUrls);
 </script>
 
 </body>
