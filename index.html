@@ -44,24 +44,22 @@
 <body>
 
 <h2>YouTube Playlist URL Generator</h2>
-<input type="text" id="playlistInput" placeholder="Enter YouTube Playlist URL">
+<input type="text" id="playlistInput" placeholder="Enter YouTube Playlist ID">
 <div id="videosContainer"></div>
 
 <script>
     // Function to generate embed URLs for each video in playlist
     function generateEmbedUrls() {
-        var playlistUrl = document.getElementById('playlistInput').value;
-        var apiUrl = 'https://www.youtube.com/playlist?list=' + playlistUrl.split('list=')[1] + '&hl=en&jct=xkUZVuvol8T0PdxyL15E1tgbQZUt0MuJWnGbMA';
-        
-        var script = document.createElement('script');
-        script.src = apiUrl + '&callback=handlePlaylistResponse';
-        document.body.appendChild(script);
-    }
+        var playlistId = document.getElementById('playlistInput').value;
+        var apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=' + playlistId + '&key=AIzaSyCRdykR8k_Hg8AkBhYioyN7hm-Pb28WmZU';
 
-    // Callback function to handle playlist response
-    function handlePlaylistResponse(data) {
-        var videoIds = extractVideoIds(data);
-        displayVideos(videoIds);
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                var videoIds = extractVideoIds(data);
+                displayVideos(videoIds);
+            })
+            .catch(error => console.error('Error fetching playlist data: ', error));
     }
 
     // Function to extract video IDs from playlist data
