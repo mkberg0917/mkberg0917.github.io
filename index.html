@@ -1,44 +1,104 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-    <title>Tipton Facebook Feed</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Playlist URL Generator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+    }
+    #playlistInput {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .videoContainer {
+        margin-bottom: 20px;
+    }
+    .videoTitle {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .videoEmbedUrl {
+        width: 80%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+    .copyButton {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .copyButton:hover {
+        background-color: #0056b3;
+    }
+</style>
 </head>
 <body>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0&appId=116613092061576&autoLogAppEvents=1" nonce="XP5d4CcI"></script>
-    <div id="fb-root"></div>
 
-<div id="widget_wrapper">
-    
-    <div class="tab">
-        <button class="tablinks" onclick="openSchool(event, 'Corporation')" id="defaultOpen">Corporation News</button>
-        <button class="tablinks" onclick="openSchool(event, 'Elementary')">Elementary School News</button>
-        <button class="tablinks" onclick="openSchool(event, 'Middle')">Middle School News</button>
-        <button class="tablinks" onclick="openSchool(event, 'High')">High School News</button>  
-    </div>
-    
-    <div id="news">
-        <div id="Corporation" class="tabcontent">
-            <div class="fb-page" data-href="https://www.facebook.com/tiptonschools/" data-tabs="timeline" data-width="" data-height="500" data-small-header="false" data-adapt-container-width="false" data-hide-cover="false" data-show-facepile="false" data-lazy="false"><blockquote cite="https://www.facebook.com/tiptonschools/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/tiptonschools/">Tipton Community School Corporation</a></blockquote></div>
-        </div>
-        <div id="Elementary" class="tabcontent">
-            <div class="fb-page" data-href="https://www.facebook.com/TiptonElement/" data-tabs="timeline" data-width="" data-height="500" data-small-header="false" data-adapt-container-width="false" data-hide-cover="false" data-show-facepile="false" data-lazy="false"><blockquote cite="https://www.facebook.com/TiptonElement/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/TiptonElement/">Tipton Elementary School</a></blockquote></div>
-        </div>
-        <div id="Middle" class="tabcontent">
-            <div class="fb-page" data-href="https://www.facebook.com/TiptonMiddleSchool/" data-tabs="timeline" data-width="" data-height="500" data-small-header="false" data-adapt-container-width="false" data-hide-cover="false" data-show-facepile="false" data-lazy="false"><blockquote cite="https://www.facebook.com/TiptonMiddleSchool/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/TiptonMiddleSchool/">Tipton Middle School</a></blockquote></div>
-        </div>
-        <div id="High" class="tabcontent">
-            <div class="fb-page" data-href="https://www.facebook.com/TiptonHighSchool/" data-tabs="timeline" data-width="" data-height="500" data-small-header="false" data-adapt-container-width="false" data-hide-cover="false" data-show-facepile="false" data-lazy="false"><blockquote cite="https://www.facebook.com/TiptonHighSchool/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/TiptonHighSchool/">Tipton High School</a></blockquote></div>
-        </div>
-    </div>
-    
-</div>
+<h2>YouTube Playlist URL Generator</h2>
+<input type="text" id="playlistInput" placeholder="Enter YouTube Playlist URL">
+<div id="videosContainer"></div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="js.js"></script>
-<script src="resize.js"></script>
+<script>
+    // Function to generate embed URLs for each video in playlist
+    function generateEmbedUrls() {
+        var playlistUrl = document.getElementById('playlistInput').value;
+        fetch(playlistUrl)
+            .then(response => response.text())
+            .then(data => {
+                var videoIds = extractVideoIds(data);
+                displayVideos(videoIds);
+            })
+            .catch(error => console.error('Error fetching playlist data: ', error));
+    }
 
+    // Function to extract video IDs from playlist page HTML content
+    function extractVideoIds(htmlContent) {
+        var videoIds = [];
+        var regex = /"videoId":"(.*?)"/g;
+        var match;
+        while (match = regex.exec(htmlContent)) {
+            videoIds.push(match[1]);
+        }
+        return videoIds;
+    }
+
+    // Function to display videos with embed URLs and copy buttons
+    function displayVideos(videoIds) {
+        var videosContainer = document.getElementById('videosContainer');
+        videosContainer.innerHTML = '';
+        videoIds.forEach(videoId => {
+            var embedUrl = 'https://www.youtube.com/embed/' + videoId;
+            var videoDiv = document.createElement('div');
+            videoDiv.classList.add('videoContainer');
+            videoDiv.innerHTML = `
+                <div class="videoTitle">Video ID: ${videoId}</div>
+                <input type="text" class="videoEmbedUrl" value="${embedUrl}" readonly>
+                <button class="copyButton" onclick="copyUrl(this)">Copy URL</button>
+            `;
+            videosContainer.appendChild(videoDiv);
+        });
+    }
+
+    // Function to copy URL to clipboard
+    function copyUrl(button) {
+        var embedUrlInput = button.previousSibling;
+        embedUrlInput.select();
+        document.execCommand('copy');
+        alert('Copied to clipboard: ' + embedUrlInput.value);
+    }
+
+    // Event listener for generating embed URLs
+    document.getElementById('playlistInput').addEventListener('input', generateEmbedUrls);
+</script>
 
 </body>
 </html>
