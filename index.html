@@ -108,8 +108,8 @@
     // Function to copy URL to clipboard
     function copyUrl(button) {
         var embedUrlInput = button.previousSibling;
-        embedUrlInput.select();
-        embedUrlInput.setSelectionRange(0, 99999); /* For mobile devices */
+        embedUrlInput.focus();
+        embedUrlInput.setSelectionRange(0, embedUrlInput.value.length);
         document.execCommand('copy');
         button.innerText = "Copied";
         button.classList.add("copied");
